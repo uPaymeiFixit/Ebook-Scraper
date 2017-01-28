@@ -1,7 +1,7 @@
 # Ebook-Scraper
 Downloads pages of a textbook from Vitalsource
 
-This will download the pages (as jpegs) of an online textbook from Vitalsoure.
+This will download the pages (as jpegs) of an online textbook from Vitalsource.
 
 Note: This script will need some configuration to be used with different textbooks.
 
