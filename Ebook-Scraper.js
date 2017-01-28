@@ -9,7 +9,8 @@ let start = 367836503;
 let pages = 10;
 let width = 2400
 let verbose = false;
-let cookie;
+let isbn = 9780321990167;
+let cookie = "";
 
 let count = 0;
 let time = new Date();
@@ -41,18 +42,21 @@ for (let i = 0; i < args.length; i++) {
         case '--verbose':
             verbose = true;
             break;
+        case '-i':
+        case '--isbn':
+            isbn = args[i + 1];
+            break;
     }
 }
 
-if (cookie === null) {
+if (cookie === "") {
     console.log(`JIGSAW_COOKIE required!`);
     console.log('To get a valid cookie, log in to ' +
-                chalk.cyan('http://jigsaw.vitalsource.com/books/9780321990167') +
+                chalk.cyan(`http://jigsaw.vitalsource.com/books/${isbn}`) +
                 '\nThen run this in the console:\n' +
                 chalk.yellow('window.prompt("Copy to clipboard: Ctrl+C, Enter", document.cookie);'));
-    exit(1);
     showHelp();
-    return 1;
+    exit(1);
 }
 
 function showHelp() {
@@ -63,7 +67,7 @@ let options = {
     'method': 'GET',
     'hostname': 'jigsaw.vitalsource.com',
     'port': null,
-    'path': '/books/9780321990167/pages/367836503/content?width=2400',
+    'path': `/books/${isbn}/pages/${start}/content?width=${width}`,
     'headers': {
         'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
         'cookie': cookie,
@@ -89,7 +93,7 @@ function recursiveRequest(page) {
         exit(0)
     }
 
-    options.path = `/books/9780321990167/pages/${page}/content?width=${width}`;
+    options.path = `/books/${isbn}/pages/${page}/content?width=${width}`;
     if (verbose) {
         console.log(chalk.cyan(`  Analyzing page ${page}: ${options.hostname}${options.path}`));
     }
@@ -120,7 +124,7 @@ function recursiveRequest(page) {
             }
             recursiveRequest(page + 1);
         } else {
-            options.path = `/books/9780321990167/images/${id}/encrypted/${width}`
+            options.path = `/books/${isbn}/images/${id}/encrypted/${width}`
             if (verbose) {
                 console.log(chalk.green(`Downloading page ${page}: ${options.hostname}${options.path}`));
             }
